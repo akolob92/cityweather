@@ -1,0 +1,108 @@
+<!doctype html>
+<html data-ng-app="cwApp" data-ng-csp>
+<head>
+    <meta charset="utf-8">
+    <title>City Weather App</title>
+    <link rel="stylesheet" href="./stylesheets/styles.css">
+    <link rel="stylesheet" href="./stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="./stylesheets/github-light.css">
+    <script src="./javascripts/vendor/angular.min.js"></script>
+    <script src="./javascripts/scale.fix.js"></script>
+    <!--<script src="./services/weather.js"></script>-->
+    <!--<script src="./services/time.js"></script>-->
+    <!--<script src="./controllers/main.js"></script>-->
+
+    <!--<script src="./js/city.js"></script>-->
+    <!--<script src="./directives/autofill.js"></script>-->
+
+
+</head>
+<body data-ng-controller="mainController">
+<script src="./javascripts/popup.js"></script>
+<div class="navbar-fixed-bottom row-fluid panel-footer">
+    <div class="navbar-inner">
+        <div class="container text-center">City Weather App v.0.0.1
+            <p>Used APIs: openweather.org, Google Places Autocomplete, timezonedb.com</p>
+        </div>
+    </div>
+</div>
+<script>(function () {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
+    ga.src = 'https://ssl.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+})();</script>
+<div id="embed-api-auth-container"></div>
+<div id="chart-container"></div>
+<div id="view-selector-container"></div>
+
+<script>
+(function(w,d,s,g,js,fs){
+  g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
+  js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
+  js.src='https://apis.google.com/js/platform.js';
+  fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
+}(window,document,'script'));
+</script>
+<script>
+
+gapi.analytics.ready(function() {
+
+  /**
+   * Authorize the user immediately if the user has already granted access.
+   * If no access has been created, render an authorize button inside the
+   * element with the ID "embed-api-auth-container".
+   */
+  gapi.analytics.auth.authorize({
+    container: 'embed-api-auth-container',
+    clientid: 'REPLACE WITH YOUR CLIENT ID'
+  });
+
+
+  /**
+   * Create a new ViewSelector instance to be rendered inside of an
+   * element with the id "view-selector-container".
+   */
+  var viewSelector = new gapi.analytics.ViewSelector({
+    container: 'view-selector-container'
+  });
+
+  // Render the view selector to the page.
+  viewSelector.execute();
+
+
+  /**
+   * Create a new DataChart instance with the given query parameters
+   * and Google chart options. It will be rendered inside an element
+   * with the id "chart-container".
+   */
+  var dataChart = new gapi.analytics.googleCharts.DataChart({
+    query: {
+      metrics: 'ga:sessions',
+      dimensions: 'ga:date',
+      'start-date': '30daysAgo',
+      'end-date': 'yesterday'
+    },
+    chart: {
+      container: 'chart-container',
+      type: 'LINE',
+      options: {
+        width: '100%'
+      }
+    }
+  });
+
+
+  /**
+   * Render the dataChart on the page whenever a new view is selected.
+   */
+  viewSelector.on('change', function(ids) {
+    dataChart.set({query: {ids: ids}}).execute();
+  });
+
+});
+</script>
+</body>
+</html>
